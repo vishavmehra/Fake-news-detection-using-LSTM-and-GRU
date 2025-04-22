@@ -1,101 +1,101 @@
-Fake News Detection using Bi-directional LSTM & GRU
+This project compares Deep Learning (LSTM, GRU, CNN) and Machine Learning (SVM, Logistic Regression, Decision Tree, KNN, Random Forest) approaches for **Fake News Detection** using the **ISOT Fake News Dataset**. It achieves **>99% accuracy** with several models and provides detailed comparisons.
 
-This project implements a deep learning approach for detecting fake news articles using NLP techniques and neural sequence models. The goal is to classify news articles as either fake or real using the ISOT Fake News Dataset, achieving over 99% accuracy using Bi-directional LSTM and GRU architectures.
+---
 
------------------------------------
-📊 Dataset Used: ISOT Fake News Dataset
------------------------------------
-The dataset consists of two files:
-- `True.csv`: real news articles
-- `Fake.csv`: fake news articles
+## 📦 Dataset: ISOT Fake News Dataset
 
-Each article contains:
-- `title`
-- `text` (full article content)
-- `subject`
-- `date`
+| File       | Description         |
+|------------|---------------------|
+| `True.csv` | Real news articles  |
+| `Fake.csv` | Fake news articles  |
 
-A binary `label` column was added:  
-- `0` → Real  
+A `label` column was added:
+- `0` → Real
 - `1` → Fake
 
------------------------------------
-🔄 Preprocessing Approach
------------------------------------
-1. **Text Cleaning:**
-   - Combined `title` and `text` into one column
-   - Converted all text to lowercase
-   - Removed punctuation, digits, and special characters
-   - Removed extra whitespace
+---
 
-2. **Stopword Removal:**
-   - Removed common English stopwords using NLTK
+## 🧹 Preprocessing Overview
 
-3. **Lemmatization:**
-   - Used `spaCy` (`en_core_web_sm`) to lemmatize each word
-   - Retained only meaningful root forms (e.g., "running" → "run")
+### ✅ Shared Preprocessing (DL + ML)
+- Combined and used only the `text` column.
+- Converted to lowercase.
+- Removed punctuation, numbers, and special characters.
+- Removed stopwords using **NLTK**.
+- Normalized repeating characters (e.g., "cooool" → "cool").
+- Used **spaCy** for lemmatization (`en_core_web_sm`).
+- Applied whitespace cleanup.
 
-4. **Normalization:**
-   - Removed character elongations (e.g., "cooool" → "cool")
-   - Removed repeated whitespaces
+---
 
-5. **Tokenization & Padding:**
-   - Tokenized text using Keras `Tokenizer`
-   - Padded all sequences to the same maximum length (300)
+## 🔠 Tokenization
 
------------------------------------
-💡 Embedding & Modeling Approach
------------------------------------
-1. **Text Vectorization:**
-   - Used Keras’ `Tokenizer` to convert text to integer sequences
-   - Used `Embedding` layer (embedding_dim=128) to convert tokens into dense vectors
+| Model Type | Vectorization                     | Description                  |
+|------------|-----------------------------------|------------------------------|
+| DL Models  | Keras Tokenizer + Padding         | For LSTM, GRU, CNN           |
+| ML Models  | TF-IDF (All except RF2)           | For SVM, LR, DT, KNN, RF1    |
+| ML Models  | Count Vectorizer (TF only for RF2)| For Random Forest 2 only     |
 
-2. **Model Architectures:**
-   - Bi-directional LSTM
-   - Bi-directional GRU
+---
 
-3. **Model Layers:**
-   - Embedding Layer (non-trainable)
-   - Bidirectional LSTM / GRU
-   - Dense layer with ReLU + Dropout
-   - Output layer with Sigmoid activation
+## 🔮 Model Architectures
 
-4. **Training:**
-   - Optimizer: Adam
-   - Loss: Binary Crossentropy
-   - Metrics: Accuracy
-   - EarlyStopping callback to prevent overfitting
+### 🔷 Deep Learning Models (TensorFlow/Keras)
 
------------------------------------
-📈 Performance
------------------------------------
-| Model           | Accuracy | Loss |
-|-----------------|----------|------|
-| BiLSTM          | ~99%     | Low  |
-| BiGRU           | ~99%     | Low  |
+| Model | Layers Used |
+|-------|-------------|
+| **LSTM** | Embedding → BiLSTM → Dense + Dropout → Sigmoid |
+| **GRU**  | Embedding → BiGRU → Dense + Dropout → Sigmoid  |
+| **CNN**  | Embedding → Conv1D → GlobalMaxPooling → Dense + Dropout → Sigmoid |
 
-Evaluation metrics:
-- Classification Report (Precision, Recall, F1-score)
-- Confusion Matrix
-- Accuracy & Loss Plots
+All DL models used:
+- `embedding_dim = 128`
+- `max_len = 300`
+- `EarlyStopping` callback
+- `BinaryCrossentropy` loss
+- `Adam` optimizer
 
------------------------------------
-🚀 How to Run (Google Colab Recommended)
------------------------------------
-1. Preprocess the data using the provided preprocessing pipeline
-2. Train BiLSTM and BiGRU models on the processed data
-3. Evaluate using test set metrics
-4. Visualize training and validation curves
+### 🔷 Machine Learning Models (Scikit-learn)
 
------------------------------------
-📚 Libraries Used
------------------------------------
-- Python 3.x
-- TensorFlow / Keras
-- Pandas / NumPy / Matplotlib / Seaborn
-- Scikit-learn
-- NLTK / spaCy (`en_core_web_sm`)
+| Model                          | Parameters                     |
+|--------------------------------|--------------------------------|
+| SVM                            | C=1                            |
+| Logistic Regression            | C=1, max_iter=1000             |
+| Decision Tree                  | max_depth=5                    |
+| K-Nearest Neighbors            | k=9                            |
+| Random Forest 1                | n_estimators=400, depth=40     |
+| Random Forest 2 (TF)           | n_estimators=300, depth=40     |
 
------------------------------------
-📌 Project Status: Completed
-🎯 Final Accuracy: Over 99%
+---
+
+## 📊 Final Combined Model Comparison
+
+| Model                          | Test Accuracy | Precision | Recall | F1-Score |
+|--------------------------------|---------------|-----------|--------|----------|
+| **LSTM**                       | 0.9960        | 0.9932    | 0.9983 | 0.9958   |
+| **GRU**                        | 0.9950        | 0.9956    | 0.9938 | 0.9947   |
+| **CNN**                        | 0.9970        | 0.9964    | 0.9974 | 0.9969   |
+| SVM (C=1)                      | 0.9938        | 0.9930    | 0.9940 | 0.9935   |
+| Logistic Regression (C=1)      | 0.9842        | 0.9823    | 0.9843 | 0.9833   |
+| Decision Tree (max_depth=5)    | 0.9940        | 0.9901    | 0.9974 | 0.9937   |
+| KNN (k=9)                      | 0.8618        | 0.8771    | 0.8241 | 0.8497   |
+| Random Forest 1 (n=400, d=40)  | 0.9973        | 0.9975    | 0.9968 | 0.9972   |
+| Random Forest 2 (n=300, d=40)  | 0.9976        | 0.9974    | 0.9975 | 0.9975   |
+
+
+## 🚀 How to Run
+
+1. Upload the `True.csv` and `Fake.csv` files to your Colab session.
+2. Run preprocessing cells.
+3. Train deep learning and machine learning models.
+4. Evaluate and visualize results.
+
+---
+
+## 🛠 Libraries Used
+
+- `TensorFlow`, `Keras`, `Scikit-learn`
+- `Pandas`, `NumPy`, `Matplotlib`, `Seaborn`
+- `NLTK`, `spaCy`
+
+---
